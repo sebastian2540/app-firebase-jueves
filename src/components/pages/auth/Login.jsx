@@ -1,34 +1,61 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import "./Login.css";
 import { connDatabases } from "../../database/firebaseConfig";
 import { collection, getDocs } from "firebase/firestore";
+import { Link, useNavigate } from "react-router-dom";
 
 const Login = () => {
+  const [usuarios, setUsuario] = useState([]);
+  const [getUser, setUser] = useState("");
+  const [getPassword, setPassword] = useState("");
   async function getUsuarios() {
     let collectionUsuarios = collection(connDatabases, "usuario");
     let datosUsuario = await getDocs(collectionUsuarios);
-    console.log(collectionUsuarios);
-    console.log(datosUsuario);
+    // console.log(collectionUsuarios);
+    setUsuario(datosUsuario.docs.map((doc) => ({ ...doc.data() })));
+    console.log(datosUsuario.docs.map((doc) => ({ ...doc.data() })));
   }
-  getUsuarios();
+  useEffect(() => {
+    getUsuarios();
+  }, []);
+
+  let redireccion = useNavigate();
+
+  const buscarUsuario = () => {
+    let estado = usuarios.some(
+      (usuario) => usuario.user === getUser && usuario.password === getPassword
+    );
+    return estado;
+  };
+
+  const iniciarSesion = () => {
+    if (buscarUsuario()) {
+      setTimeout(() => {
+        redireccion("/home");
+      });
+      console.log("Bienvenido");
+    } else {
+      console.log("Error de credenciales");
+    }
+  };
 
   return (
     <div class="login-page">
       <div class="form">
-        <form class="register-form">
-          <input type="text" placeholder="name" />
-          <input type="password" placeholder="password" />
-          <input type="text" placeholder="email address" />
-          <button>create</button>
-          <p class="message">
-            Already registered? <a href="#">Sign In</a>
-          </p>
-        </form>
-
         <form class="login-form">
-          <input type="text" placeholder="Username" />
-          <input type="password" placeholder="Password" />
-          <button type="button">login</button>
+          <input
+            onChange={(e) => setUser(e.target.value)}
+            type="text"
+            placeholder="Username"
+          />
+          <input
+            onChange={(e) => setPassword(e.target.value)}
+            type="password"
+            placeholder="Password"
+          />
+          <button onClick={iniciarSesion} type="button">
+            login
+          </button>
           <p class="message">
             Not registered? <a href="#">Create an account</a>
           </p>
@@ -37,5 +64,4 @@ const Login = () => {
     </div>
   );
 };
-
 export default Login;
