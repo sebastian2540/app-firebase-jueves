@@ -15,6 +15,7 @@ const Login = () => {
     setUsuario(datosUsuario.docs.map((doc) => ({ ...doc.data() })));
     console.log(datosUsuario.docs.map((doc) => ({ ...doc.data() })));
   }
+  
   useEffect(() => {
     getUsuarios();
   }, []);
