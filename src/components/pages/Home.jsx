@@ -5,7 +5,7 @@ const Home = () => {
     <section className="panel">
       <Header />
       <main className="panel-contenido">
-       
+       <p>Home</p>
       </main>
     </section>
   );

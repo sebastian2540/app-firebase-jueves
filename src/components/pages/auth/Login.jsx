@@ -3,6 +3,7 @@ import "./Login.css";
 import { connDatabases } from "../../database/firebaseConfig";
 import { collection, getDocs } from "firebase/firestore";
 import { Link, useNavigate } from "react-router-dom";
+import Swal from "sweetalert2";
 
 const Login = () => {
   const [usuarios, setUsuario] = useState([]);
@@ -31,11 +32,21 @@ const Login = () => {
 
   const iniciarSesion = () => {
     if (buscarUsuario()) {
+      Swal.fire({
+        title: "Bienvenido",
+        text: "Será redireccionado al Home",
+        icon: "success"
+      });
       setTimeout(() => {
         redireccion("/home");
-      });
+      },2000);
       console.log("Bienvenido");
     } else {
+      Swal.fire({
+        title: "Error",
+        text: "Usuario y/o contraseña incorrecto",
+        icon: "error"
+      });
       console.log("Error de credenciales");
     }
   };
