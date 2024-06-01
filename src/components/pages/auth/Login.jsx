@@ -69,7 +69,7 @@ const Login = () => {
             login
           </button>
           <p class="message">
-            Not registered? <a href="#">Create an account</a>
+            Not registered? <Link to="/registro">Create an account</Link>
           </p>
         </form>
       </div>

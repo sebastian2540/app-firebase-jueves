@@ -60,11 +60,12 @@ const ListadoUsuario = () => {
               <p>Contraseña: {element.password} </p>
               <p>Correo: {element.email} </p>
               <p>Ciudad: {element.ciudad} </p>
+              <p>{element.img}</p>
             </section>
 
             <div>
-              <button>Editar</button>
-              <button onClick={() => eliminarUsuario(element.id)}>
+              <button className="button-editar">Editar</button>
+              <button className="button-cancelar" onClick={() => eliminarUsuario(element.id)}>
                 Eliminar
               </button>
             </div>
