@@ -57,6 +57,10 @@
 }
 
 .button-cancelar:hover {
-    background-color: rgb(177, 4, 4)
-  }
-  
+  background-color: rgb(177, 4, 4);
+}
+
+img {
+  width: 100px;
+  height: 100px;
+}

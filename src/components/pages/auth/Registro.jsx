@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from "react";
 import "./Login.css";
-import { connDatabases } from "../../database/firebaseConfig";
+import { connDatabases, initStorage } from "../../database/firebaseConfig";
 import { addDoc, collection, getDocs } from "firebase/firestore";
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { Link, useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
+import { v4 } from "uuid";
 
 const Registro = () => {
   const [usuarios, setUsuario] = useState([]);
@@ -53,13 +55,23 @@ const Registro = () => {
     });
   }
 
+  async function subirImg(img) {
+    let referenciaImg = ref(initStorage, v4());
+    await uploadBytes(referenciaImg, img);
+    console.log(referenciaImg);
+    let urlImg = await getDownloadURL(referenciaImg);
+    return urlImg;
+  }
+
   async function crearUsuario() {
+    let imgServer = await subirImg(img);
     let nuevoUsuario = {
       user,
       password,
       email,
       nombre,
       ciudad,
+      imgServer
     };
     let collectionUsuarios = collection(connDatabases, "usuario");
     await addDoc(collectionUsuarios, nuevoUsuario);
@@ -106,7 +118,7 @@ const Registro = () => {
             type="ciudad"
             placeholder="Ciudad"
           />
-          <input onChange={(e) => setImg(e.target.value)} type="file" />
+          <input onChange={(e) => setImg(e.target.files[0])} type="file" />
           <button onClick={registrarUsuario} type="button">
             Registro
           </button>

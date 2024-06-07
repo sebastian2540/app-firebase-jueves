@@ -61,7 +61,7 @@ const ListadoUsuario = () => {
               <p>Contraseña: {element.password} </p>
               <p>Correo: {element.email} </p>
               <p>Ciudad: {element.ciudad} </p>
-              <p>{element.img}</p>
+              <img src={element.imgServer} alt="" />
             </section>
 
             <div>
