@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 import { connDatabases } from "../../database/firebaseConfig";
 import { collection, deleteDoc, doc, getDocs } from "firebase/firestore";
 import Swal from "sweetalert2";
+import { Link } from "react-router-dom";
 
 const ListadoUsuario = () => {
   const [usuarios, setUsuario] = useState([]);
@@ -44,7 +45,7 @@ const ListadoUsuario = () => {
   async function confirmar(id) {
     let deleteUser = doc(connDatabases, "usuario", id);
     await deleteDoc(deleteUser);
-    getUsuarios()
+    getUsuarios();
   }
 
   return (
@@ -64,8 +65,13 @@ const ListadoUsuario = () => {
             </section>
 
             <div>
-              <button className="button-editar">Editar</button>
-              <button className="button-cancelar" onClick={() => eliminarUsuario(element.id)}>
+              <button className="button-editar">
+                <Link to={"/editarUsuario/" + element.id}>Editar</Link>
+              </button>
+              <button
+                className="button-cancelar"
+                onClick={() => eliminarUsuario(element.id)}
+              >
                 Eliminar
               </button>
             </div>

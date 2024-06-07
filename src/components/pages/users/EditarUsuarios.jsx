@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import "./EditarUsuarios.css";
 import { connDatabases } from "../../database/firebaseConfig";
-import { addDoc, collection, getDocs } from "firebase/firestore";
-import { Link, useNavigate } from "react-router-dom";
+import { collection, doc, getDoc, updateDoc } from "firebase/firestore";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import Swal from "sweetalert2";
 
 const Registro = () => {
@@ -14,68 +14,35 @@ const Registro = () => {
   const [ciudad, setCiudad] = useState("");
   const [img, setImg] = useState("");
   let redireccion = useNavigate();
+  let { id } = useParams();
 
-  async function getUsuarios() {
-    let collectionUsuarios = collection(connDatabases, "usuario");
-    let datosUsuario = await getDocs(collectionUsuarios);
-    // console.log(collectionUsuarios);
-    setUsuario(datosUsuario.docs.map((doc) => ({ ...doc.data() })));
-    console.log(datosUsuario.docs.map((doc) => ({ ...doc.data() })));
+  async function getUsuarioId(id) {
+    let usuarioEditar = await getDoc(doc(connDatabases, "usuario", id));
+    console.log(usuarioEditar);
+    setUser(usuarioEditar.data().user);
+    setPassword(usuarioEditar.data().password);
+    setNombre(usuarioEditar.data().nombre);
+    setEmail(usuarioEditar.data().email);
+    setCiudad(usuarioEditar.data().ciudad);
   }
 
   useEffect(() => {
-    getUsuarios();
+    getUsuarioId(id);
   }, []);
 
-  const buscarUsuario = () => {
-    let estado = usuarios.some((usuario) => usuario.user === user);
-    return estado;
-  };
-
-  function confirmar() {
-    Swal.fire({
-      title: "Esta seguro que se quiere registrar?",
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonColor: "#3085d6",
-      cancelButtonColor: "#d33",
-      confirmButtonText: "Si, registrarme",
-    }).then((result) => {
-      if (result.isConfirmed) {
-        crearUsuario();
-        Swal.fire({
-          title: "Registrado",
-          text: "Usuarios registrado correctamente...",
-          icon: "success",
-        });
-        redireccion("/");
-      }
-    });
-  }
-
-  async function crearUsuario() {
+  async function editarUsuario() {
     let nuevoUsuario = {
       user,
       password,
-      email,
       nombre,
+      email,
       ciudad,
     };
-    let collectionUsuarios = collection(connDatabases, "usuario");
-    await addDoc(collectionUsuarios, nuevoUsuario);
+    let enviarnUsuarios = doc(connDatabases, "usuario", id);
+    await updateDoc(enviarnUsuarios, nuevoUsuario);
+    redireccion('/listadoUsuario')
+    console.log(nuevoUsuario)
   }
-
-  const registrarUsuario = () => {
-    if (!buscarUsuario()) {
-      confirmar();
-    } else {
-      Swal.fire({
-        title: "Error",
-        text: "Usuario ya existe en la base de datos",
-        icon: "error",
-      });
-    }
-  };
 
   return (
     <div class="login-page">
@@ -85,34 +52,41 @@ const Registro = () => {
             onChange={(e) => setUser(e.target.value)}
             type="text"
             placeholder="Username"
+            value={user}
+            disabled
           />
           <input
             onChange={(e) => setPassword(e.target.value)}
             type="password"
             placeholder="Password"
+            value={password}
+            disabled
           />
           <input
             onChange={(e) => setNombre(e.target.value)}
             type="text"
             placeholder="Name"
+            value={nombre}
           />
           <input
             onChange={(e) => setEmail(e.target.value)}
             type="email"
             placeholder="Email"
+            value={email}
           />
           <input
             onChange={(e) => setCiudad(e.target.value)}
             type="ciudad"
             placeholder="Ciudad"
+            value={ciudad}
           />
           <input onChange={(e) => setImg(e.target.value)} type="file" />
-          <button onClick={registrarUsuario} type="button">
-            Registro
+          <button onClick={editarUsuario} type="button">
+            Editar
           </button>
-          <p class="message">
-            Ya tiene cuenta? <Link to="/">Login</Link>
-          </p>
+          <button type="button">
+            <Link to="/listado-usuarios">Cancelar</Link>
+          </button>
         </form>
       </div>
     </div>

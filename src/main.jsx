@@ -25,7 +25,7 @@ const router = createBrowserRouter([
     element: <ListadoUsuario />
   },
   {
-    path: "/editarUsuario",
+    path: "/editarUsuario/:id",
     element: <EditarUsuarios />
   }
 ]);
